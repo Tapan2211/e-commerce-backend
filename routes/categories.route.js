@@ -12,16 +12,15 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/');
     },
     filename: (req, file, cb) => {
-        console.log("File received:", file);
         cb(null, Date.now() + '-' + file.originalname);
     }
 });
 
 const upload = multer({ storage: storage });
 
-router.post('/new', upload.single('image'), createCategory);
+router.post('/new', upload.single('categoryImage'), createCategory);
 router.get('/', getAllCategories);
-router.put('/:id', upload.single('image'), updateCategory)
+router.put('/:id', upload.single('categoryImage'), updateCategory)
 router.delete('/:id', deletCategory);
 
 module.exports = router;
