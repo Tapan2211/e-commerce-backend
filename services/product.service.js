@@ -3,6 +3,7 @@ const productModel = require('../models/product.model');  // Import the model di
 class productService {
     create = async (productName, brand, rating, productImage, color, productPrice, discount, percentage, productDescription, productColor, category) => {
         try {
+            const discount = Math.round(productPrice - (productPrice * (percentage / 100))); // Calculate discounted price
             const product = new productModel({
                 productName,
                 brand,
@@ -44,6 +45,7 @@ class productService {
 
     update = async (productId, productName, brand, rating, productImage, color, productPrice, discount, percentage, productDescription, productColor, category) => {
         try {
+            const discount = Math.round(productPrice - (productPrice * (percentage / 100))); // Calculate discounted price
             const updateData = {
 
                 productName,
@@ -66,8 +68,9 @@ class productService {
     }
 
     delete = async (id) => {
+        console.log("ProductId", id);
         try {
-            return await productModel.findOneAndDelete(id);
+            return await productModel.findOneAndDelete({ _id: id });
         } catch (error) {
             console.error("Error in Product delete:", error);
             throw error;

@@ -3,12 +3,31 @@ const productServiceInstance = new productService();
 
 const createProduct = async (req, res) => {
     try {
-
         const { productName, brand, rating, color, productPrice, discount, percentage, productDescription, productColor, category } = req.body;
         const productImage = req.file ? `/uploads/${req.file.filename}` : null;
 
-        if (!productName || !brand || !rating || !productImage || !color || !productPrice || !discount || !percentage || !productDescription || !productColor || !category) {
+        // Validate required fields !color ||, || !discount 
+        if (!productName || !brand || !rating || !productImage || !productPrice || !percentage || !productDescription || !productColor || !category) {
             return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        // Coerce types and validate data types
+        const coercedRating = Number(rating);
+        const coercedProductPrice = Number(productPrice);
+        const coercedDiscount = Number(discount);
+        const coercedPercentage = Number(percentage);
+
+        if (isNaN(coercedRating)) {
+            return res.status(400).json({ message: 'Rating must be a number' });
+        }
+        if (isNaN(coercedProductPrice)) {
+            return res.status(400).json({ message: 'Product price must be a number' });
+        }
+        // if (isNaN(coercedDiscount)) {
+        //     return res.status(400).json({ message: 'Discount must be a number' });
+        // }
+        if (isNaN(coercedPercentage)) {
+            return res.status(400).json({ message: 'Percentage must be a number' });
         }
 
         // Check for duplicate product
@@ -20,11 +39,12 @@ const createProduct = async (req, res) => {
         const data = await productServiceInstance.create(
             productName,
             brand,
-            rating,
+            coercedRating,
             productImage,
-            productPrice,
-            discount,
-            percentage,
+            color,
+            coercedProductPrice,
+            coercedDiscount,
+            coercedPercentage,
             productDescription,
             productColor,
             category
